@@ -1,44 +1,56 @@
 # Claude Code Skills - Rust Hexagonal Architecture
 
-A collection of Claude Code skills for implementing hexagonal architecture (ports and adapters pattern) in Rust projects.
+Professional Claude Code skills for implementing hexagonal architecture (ports and adapters pattern) in Rust projects. Optimized for performance with progressive disclosure and comprehensive guides.
 
 ## Available Skills
 
-### 1. Hexagonal Architecture with Actix-web
-**Skill Name:** `hexagonal-actix`
+### 1. Implementing Hexagonal Architecture with Actix-web
+**Skill Name:** `implementing-hexagonal-actix`
 
-Implements the hexagonal architecture pattern for Rust projects using the Actix-web framework. This skill helps you structure Actix applications with clean separation between domain, application, and infrastructure layers.
+Guides implementation of hexagonal architecture for Rust projects using Actix-web. Features progressive disclosure with concise quick-start and detailed reference files.
 
 **Use When:**
 - Building web services with Actix-web
-- Need high performance HTTP server
+- Need high-performance HTTP server
 - Want mature, battle-tested framework
 - Building applications with complex routing needs
 
-[View Skill Documentation](./hexagonal-actix/SKILL.md)
+**Structure:**
+- `SKILL.md` - Quick start and overview (217 lines)
+- `CONCURRENCY.md` - Thread-safe patterns (Arc, Mutex, RwLock, channels)
+- `IMPLEMENTATION.md` - Complete layer-by-layer guide
+- `TESTING.md` - Testing strategies and security practices
 
-### 2. Hexagonal Architecture with Axum
-**Skill Name:** `hexagonal-axum`
+[View Skill](./implementing-hexagonal-actix/SKILL.md)
 
-Implements the hexagonal architecture pattern for Rust projects using the Axum framework. This skill helps you structure Axum applications with clean separation between domain, application, and infrastructure layers.
+### 2. Implementing Hexagonal Architecture with Axum
+**Skill Name:** `implementing-hexagonal-axum`
+
+Guides implementation of hexagonal architecture for Rust projects using Axum. Features progressive disclosure with concise quick-start and detailed reference files.
 
 **Use When:**
 - Building web services with Axum
 - Want compile-time route validation
 - Prefer type-safe extractors and Tower ecosystem
-- Need more idiomatic Rust patterns
+- Need idiomatic Rust patterns
 - Want smaller binary sizes
 
-[View Skill Documentation](./hexagonal-axum/SKILL.md)
+**Structure:**
+- `SKILL.md` - Quick start and overview (234 lines)
+- `CONCURRENCY.md` - Thread-safe patterns (Arc, Mutex, RwLock, channels)
+- `IMPLEMENTATION.md` - Complete layer-by-layer guide
+- `TESTING.md` - Testing strategies and security practices
+
+[View Skill](./implementing-hexagonal-axum/SKILL.md)
 
 ## What is Hexagonal Architecture?
 
-Hexagonal architecture (also known as ports and adapters pattern) is a software design pattern that aims to create loosely coupled application components that can be easily connected to their software environment through ports and adapters.
+Hexagonal architecture (also known as ports and adapters pattern) creates loosely coupled application components that connect to their software environment through ports and adapters.
 
 ### Key Principles
 
-1. **Domain Independence**: Business logic is independent of frameworks and external concerns
-2. **Testability**: Easy to test each layer in isolation
+1. **Domain Independence**: Business logic independent of frameworks and external concerns
+2. **Testability**: Each layer tested in isolation
 3. **Flexibility**: Simple to swap implementations (databases, frameworks, external services)
 4. **Clear Boundaries**: Well-defined separation between layers
 
@@ -70,8 +82,8 @@ mkdir -p ~/.claude/skills
 cd ~/.claude/skills
 
 git clone https://github.com/xeros0201/claude-code-skills.git
-cp -r claude-code-skills/hexagonal-actix ./
-cp -r claude-code-skills/hexagonal-axum ./
+cp -r claude-code-skills/implementing-hexagonal-actix ./
+cp -r claude-code-skills/implementing-hexagonal-axum ./
 ```
 
 ### Project-Specific Skills
@@ -82,106 +94,126 @@ mkdir -p .claude/skills
 cd .claude/skills
 
 git clone https://github.com/xeros0201/claude-code-skills.git
-cp -r claude-code-skills/hexagonal-actix ./
-cp -r claude-code-skills/hexagonal-axum ./
+cp -r claude-code-skills/implementing-hexagonal-actix ./
+cp -r claude-code-skills/implementing-hexagonal-axum ./
 ```
 
 After installation, restart Claude Code for the skills to be recognized.
 
 ## Usage
 
-Once installed, you can invoke the skills by describing tasks that match their purpose:
+Invoke skills by describing tasks matching their purpose:
 
 ```
-"Help me set up hexagonal architecture with Actix"
-"Create a user service using hexagonal architecture with Axum"
-"Implement a repository pattern for my Actix application"
+"Implement hexagonal architecture with Actix"
+"Create a user service using clean architecture with Axum"
+"Set up ports and adapters pattern for my Rust API"
+"Show me thread-safe repository pattern"
 ```
 
-Claude Code will automatically recognize when to use these skills based on your request.
+Claude Code automatically recognizes when to use these skills based on your request.
 
-## Common Use Cases
+## Features
 
-### Starting a New Project
-1. Choose your framework (Actix or Axum)
-2. Ask Claude to help structure your project using hexagonal architecture
-3. Follow the generated structure for domain, application, and infrastructure layers
+### Progressive Disclosure
+- **Quick Start**: Concise SKILL.md files (<250 lines) for fast loading
+- **Detailed Guides**: Separate reference files loaded only when needed
+- **Efficient Context**: Optimized for Claude's context window
 
-### Refactoring Existing Code
-1. Identify your business logic (domain layer)
-2. Extract use cases (application layer)
-3. Move framework-specific code to infrastructure layer
+### Comprehensive Coverage
+- **Concurrency Patterns**: Arc, Mutex, RwLock, tokio::sync, parking_lot, channels
+- **Complete Implementation**: Layer-by-layer guides with full examples
+- **Testing Strategies**: Unit, integration, and end-to-end testing
+- **Security Best Practices**: Input validation, SQL injection prevention, authentication
 
-### Adding New Features
-1. Define domain entities and business rules
-2. Create use cases in application layer
-3. Implement infrastructure adapters (HTTP handlers, repositories)
-
-## Benefits of Using These Skills
-
-- **Consistency**: Follow established patterns across all your Rust projects
-- **Best Practices**: Security-first approach with built-in validation and error handling
-- **Productivity**: Quick scaffolding of clean architecture structures
-- **Maintainability**: Clear separation of concerns makes code easier to maintain
-- **Testability**: Each layer can be tested independently
+### Latest Dependencies
+- Flexible version requirements to always use latest compatible versions
+- No strict version locks - stays current with ecosystem
 
 ## Repository Structure
 
 ```
 .
 ├── README.md
-├── hexagonal-actix/
-│   └── SKILL.md
-└── hexagonal-axum/
-    └── SKILL.md
+├── implementing-hexagonal-actix/
+│   ├── SKILL.md              # Quick start (217 lines)
+│   ├── CONCURRENCY.md        # Thread-safe patterns
+│   ├── IMPLEMENTATION.md     # Complete guide
+│   └── TESTING.md            # Testing & security
+└── implementing-hexagonal-axum/
+    ├── SKILL.md              # Quick start (234 lines)
+    ├── CONCURRENCY.md        # Thread-safe patterns
+    ├── IMPLEMENTATION.md     # Complete guide
+    └── TESTING.md            # Testing & security
 ```
 
 ## Dependencies
 
-Both skills use common Rust dependencies:
+Both skills use common Rust dependencies with flexible versions:
 
-- **async-trait**: For async trait support
-- **uuid**: For unique identifiers
-- **serde**: For serialization/deserialization
-- **sqlx**: For database operations (type-safe SQL)
-- **tokio**: Async runtime
+**Core:**
+- `tokio` - Async runtime
+- `async-trait` - Async trait support
+- `uuid` - Unique identifiers
+- `serde` / `serde_json` - Serialization
+- `sqlx` - Type-safe SQL
 
-### Actix-Specific
-- **actix-web**: Web framework
+**Concurrency:**
+- `parking_lot` - High-performance synchronization
 
-### Axum-Specific
-- **axum**: Web framework
-- **tower**: Middleware and service composition
-- **tower-http**: HTTP-specific middleware
+**Actix-Specific:**
+- `actix-web` - Web framework
+
+**Axum-Specific:**
+- `axum` - Web framework
+- `tower` - Middleware composition
+- `tower-http` - HTTP middleware
+
+## Concurrency Patterns Included
+
+- **Arc** - Atomic reference counting for shared ownership
+- **Mutex** - Mutual exclusion for exclusive access
+- **RwLock** - Read-write locks for read-heavy workloads
+- **tokio::sync::Mutex** - Async-aware mutex
+- **tokio::sync::RwLock** - Async read-write lock
+- **parking_lot** - High-performance synchronization
+- **Channels** - Message passing between tasks
+- **OnceCell** - Lazy initialization
 
 ## Security Features
 
-Both skills implement security best practices:
-
 - Input validation at domain boundaries
-- SQL injection prevention using parameterized queries
+- SQL injection prevention with parameterized queries
 - Error message sanitization
 - CORS configuration
-- Rate limiting guidance
+- Rate limiting
 - TLS/HTTPS support
 - Authentication and authorization patterns
+- Request size limits
+
+## Standards Compliance
+
+These skills follow official Claude Code standards:
+
+✅ SKILL.md under 500 lines (217-234 lines)
+✅ Progressive disclosure with supporting files
+✅ Gerund naming convention
+✅ Specific descriptions with trigger terms
+✅ Security-first approach
+✅ No comments in generated code
 
 ## Contributing
 
-Contributions are welcome! Feel free to:
+Contributions welcome:
 
 - Report issues
 - Suggest improvements
 - Submit pull requests
-- Add new skills for other frameworks
+- Add skills for other frameworks
 
 ## License
 
 MIT
-
-## Author
-
-Created for use with Claude Code by Anthropic.
 
 ## Related Resources
 
@@ -189,3 +221,4 @@ Created for use with Claude Code by Anthropic.
 - [Actix Web Documentation](https://actix.rs/)
 - [Axum Documentation](https://docs.rs/axum/)
 - [Claude Code Documentation](https://docs.claude.com/)
+- [Claude Code Skills Best Practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices)
