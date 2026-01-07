@@ -487,6 +487,442 @@ pub fn create_router(user_service: Arc<dyn UserService>) -> Router {
 }
 ```
 
+## Rust Concurrency Patterns
+
+### Arc - Atomic Reference Counting
+
+Use `Arc` for shared ownership across threads. Essential for sharing services and repositories.
+
+```rust
+use std::sync::Arc;
+
+let repository = Arc::new(PostgresUserRepository::new(pool));
+let service: Arc<dyn UserService> = Arc::new(UserUseCase::new(repository.clone()));
+
+let service_clone = service.clone();
+tokio::spawn(async move {
+    service_clone.get_user(&user_id).await
+});
+```
+
+### Mutex - Mutual Exclusion
+
+Use `Mutex` for shared mutable state with exclusive access. Blocks threads waiting for lock.
+
+```rust
+use std::sync::{Arc, Mutex};
+
+pub struct CachedUserRepository {
+    inner: Arc<dyn UserRepository>,
+    cache: Arc<Mutex<HashMap<Uuid, User>>>,
+}
+
+impl CachedUserRepository {
+    pub fn new(inner: Arc<dyn UserRepository>) -> Self {
+        Self {
+            inner,
+            cache: Arc::new(Mutex::new(HashMap::new())),
+        }
+    }
+}
+
+#[async_trait]
+impl UserRepository for CachedUserRepository {
+    async fn find_by_id(&self, id: &Uuid) -> Result<Option<User>, String> {
+        {
+            let cache = self.cache.lock().unwrap();
+            if let Some(user) = cache.get(id) {
+                return Ok(Some(user.clone()));
+            }
+        }
+
+        let user = self.inner.find_by_id(id).await?;
+        if let Some(ref u) = user {
+            let mut cache = self.cache.lock().unwrap();
+            cache.insert(*id, u.clone());
+        }
+        Ok(user)
+    }
+
+    async fn save(&self, user: &User) -> Result<(), String> {
+        self.inner.save(user).await?;
+        let mut cache = self.cache.lock().unwrap();
+        cache.insert(*user.id(), user.clone());
+        Ok(())
+    }
+
+    async fn delete(&self, id: &Uuid) -> Result<(), String> {
+        self.inner.delete(id).await?;
+        let mut cache = self.cache.lock().unwrap();
+        cache.remove(id);
+        Ok(())
+    }
+
+    async fn find_by_email(&self, email: &str) -> Result<Option<User>, String> {
+        self.inner.find_by_email(email).await
+    }
+}
+```
+
+### RwLock - Read-Write Lock
+
+Use `RwLock` for shared state with multiple readers or single writer. Better performance than Mutex for read-heavy workloads.
+
+```rust
+use std::sync::{Arc, RwLock};
+use std::collections::HashMap;
+
+pub struct ConfigurationService {
+    settings: Arc<RwLock<HashMap<String, String>>>,
+}
+
+impl ConfigurationService {
+    pub fn new() -> Self {
+        Self {
+            settings: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+
+    pub fn get(&self, key: &str) -> Option<String> {
+        let settings = self.settings.read().unwrap();
+        settings.get(key).cloned()
+    }
+
+    pub fn set(&self, key: String, value: String) {
+        let mut settings = self.settings.write().unwrap();
+        settings.insert(key, value);
+    }
+
+    pub fn get_all(&self) -> HashMap<String, String> {
+        let settings = self.settings.read().unwrap();
+        settings.clone()
+    }
+}
+```
+
+### Tokio Mutex - Async-Aware Mutex
+
+Use `tokio::sync::Mutex` for async contexts. Yields instead of blocking threads.
+
+```rust
+use tokio::sync::Mutex;
+use std::sync::Arc;
+
+pub struct AsyncCachedRepository {
+    inner: Arc<dyn UserRepository>,
+    cache: Arc<Mutex<HashMap<Uuid, User>>>,
+}
+
+#[async_trait]
+impl UserRepository for AsyncCachedRepository {
+    async fn find_by_id(&self, id: &Uuid) -> Result<Option<User>, String> {
+        {
+            let cache = self.cache.lock().await;
+            if let Some(user) = cache.get(id) {
+                return Ok(Some(user.clone()));
+            }
+        }
+
+        let user = self.inner.find_by_id(id).await?;
+        if let Some(ref u) = user {
+            let mut cache = self.cache.lock().await;
+            cache.insert(*id, u.clone());
+        }
+        Ok(user)
+    }
+
+    async fn save(&self, user: &User) -> Result<(), String> {
+        self.inner.save(user).await?;
+        let mut cache = self.cache.lock().await;
+        cache.insert(*user.id(), user.clone());
+        Ok(())
+    }
+
+    async fn delete(&self, id: &Uuid) -> Result<(), String> {
+        self.inner.delete(id).await?;
+        let mut cache = self.cache.lock().await;
+        cache.remove(id);
+        Ok(())
+    }
+
+    async fn find_by_email(&self, email: &str) -> Result<Option<User>, String> {
+        self.inner.find_by_email(email).await
+    }
+}
+```
+
+### Tokio RwLock - Async Read-Write Lock
+
+Use `tokio::sync::RwLock` for async read-write scenarios.
+
+```rust
+use tokio::sync::RwLock;
+use std::sync::Arc;
+
+pub struct AsyncConfigService {
+    settings: Arc<RwLock<HashMap<String, String>>>,
+}
+
+impl AsyncConfigService {
+    pub fn new() -> Self {
+        Self {
+            settings: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+
+    pub async fn get(&self, key: &str) -> Option<String> {
+        let settings = self.settings.read().await;
+        settings.get(key).cloned()
+    }
+
+    pub async fn set(&self, key: String, value: String) {
+        let mut settings = self.settings.write().await;
+        settings.insert(key, value);
+    }
+}
+```
+
+### Parking Lot - High-Performance Synchronization
+
+Use `parking_lot` for better performance than standard library primitives.
+
+```rust
+use parking_lot::{Mutex, RwLock};
+use std::sync::Arc;
+
+pub struct FastCachedRepository {
+    inner: Arc<dyn UserRepository>,
+    cache: Arc<Mutex<HashMap<Uuid, User>>>,
+}
+
+#[async_trait]
+impl UserRepository for FastCachedRepository {
+    async fn find_by_id(&self, id: &Uuid) -> Result<Option<User>, String> {
+        {
+            let cache = self.cache.lock();
+            if let Some(user) = cache.get(id) {
+                return Ok(Some(user.clone()));
+            }
+        }
+
+        let user = self.inner.find_by_id(id).await?;
+        if let Some(ref u) = user {
+            self.cache.lock().insert(*id, u.clone());
+        }
+        Ok(user)
+    }
+
+    async fn save(&self, user: &User) -> Result<(), String> {
+        self.inner.save(user).await?;
+        self.cache.lock().insert(*user.id(), user.clone());
+        Ok(())
+    }
+
+    async fn delete(&self, id: &Uuid) -> Result<(), String> {
+        self.inner.delete(id).await?;
+        self.cache.lock().remove(id);
+        Ok(())
+    }
+
+    async fn find_by_email(&self, email: &str) -> Result<Option<User>, String> {
+        self.inner.find_by_email(email).await
+    }
+}
+```
+
+### Channels - Message Passing
+
+Use channels for communication between tasks.
+
+```rust
+use tokio::sync::mpsc;
+
+pub struct EventPublisher {
+    tx: mpsc::UnboundedSender<DomainEvent>,
+}
+
+pub enum DomainEvent {
+    UserCreated(Uuid),
+    UserDeleted(Uuid),
+}
+
+impl EventPublisher {
+    pub fn new() -> (Self, mpsc::UnboundedReceiver<DomainEvent>) {
+        let (tx, rx) = mpsc::unbounded_channel();
+        (Self { tx }, rx)
+    }
+
+    pub fn publish(&self, event: DomainEvent) {
+        let _ = self.tx.send(event);
+    }
+}
+
+pub struct UserUseCaseWithEvents {
+    repository: Arc<dyn UserRepository>,
+    publisher: Arc<EventPublisher>,
+}
+
+#[async_trait]
+impl UserService for UserUseCaseWithEvents {
+    async fn create_user(&self, email: String, name: String) -> Result<User, String> {
+        let user = User::new(email, name)?;
+        self.repository.save(&user).await?;
+        self.publisher.publish(DomainEvent::UserCreated(*user.id()));
+        Ok(user)
+    }
+
+    async fn delete_user(&self, id: &Uuid) -> Result<(), String> {
+        self.repository.delete(id).await?;
+        self.publisher.publish(DomainEvent::UserDeleted(*id));
+        Ok(())
+    }
+
+    async fn get_user(&self, id: &Uuid) -> Result<Option<User>, String> {
+        self.repository.find_by_id(id).await
+    }
+}
+```
+
+### OnceCell - Lazy Initialization
+
+Use `OnceCell` for one-time initialization.
+
+```rust
+use std::sync::OnceLock;
+
+static CONFIG: OnceLock<AppConfig> = OnceLock::new();
+
+pub struct AppConfig {
+    pub database_url: String,
+    pub port: u16,
+}
+
+pub fn get_config() -> &'static AppConfig {
+    CONFIG.get_or_init(|| AppConfig {
+        database_url: std::env::var("DATABASE_URL").unwrap(),
+        port: 8080,
+    })
+}
+```
+
+### Concurrency Best Practices
+
+1. **Prefer Arc over cloning**: Share ownership instead of cloning expensive data
+2. **Use RwLock for read-heavy**: Multiple readers can access simultaneously
+3. **Avoid holding locks across await**: Deadlock risk and performance issues
+4. **Use parking_lot**: Better performance than std primitives
+5. **Prefer message passing**: Channels over shared state when possible
+6. **Tokio primitives for async**: Use tokio::sync for async contexts
+7. **Minimize lock scope**: Release locks as soon as possible
+8. **Avoid nested locks**: Prevent deadlocks
+
+### Thread-Safe Repository Pattern
+
+Complete example with proper concurrency:
+
+```rust
+use std::sync::Arc;
+use parking_lot::RwLock;
+use std::collections::HashMap;
+
+pub struct InMemoryUserRepository {
+    users: Arc<RwLock<HashMap<Uuid, User>>>,
+    email_index: Arc<RwLock<HashMap<String, Uuid>>>,
+}
+
+impl InMemoryUserRepository {
+    pub fn new() -> Self {
+        Self {
+            users: Arc::new(RwLock::new(HashMap::new())),
+            email_index: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+}
+
+#[async_trait]
+impl UserRepository for InMemoryUserRepository {
+    async fn find_by_id(&self, id: &Uuid) -> Result<Option<User>, String> {
+        let users = self.users.read();
+        Ok(users.get(id).cloned())
+    }
+
+    async fn find_by_email(&self, email: &str) -> Result<Option<User>, String> {
+        let email_index = self.email_index.read();
+        let user_id = email_index.get(email);
+
+        match user_id {
+            Some(id) => {
+                let users = self.users.read();
+                Ok(users.get(id).cloned())
+            }
+            None => Ok(None),
+        }
+    }
+
+    async fn save(&self, user: &User) -> Result<(), String> {
+        let mut users = self.users.write();
+        let mut email_index = self.email_index.write();
+
+        users.insert(*user.id(), user.clone());
+        email_index.insert(user.email().to_string(), *user.id());
+
+        Ok(())
+    }
+
+    async fn delete(&self, id: &Uuid) -> Result<(), String> {
+        let mut users = self.users.write();
+        let mut email_index = self.email_index.write();
+
+        if let Some(user) = users.remove(id) {
+            email_index.remove(user.email());
+        }
+
+        Ok(())
+    }
+}
+```
+
+### Integration with Axum State
+
+Using Arc and concurrency primitives with Axum's state management:
+
+```rust
+use axum::{Router, extract::State};
+use std::sync::Arc;
+use parking_lot::RwLock;
+
+#[derive(Clone)]
+pub struct AppState {
+    user_service: Arc<dyn UserService>,
+    config: Arc<RwLock<AppConfig>>,
+}
+
+pub fn create_router_with_state() -> Router {
+    let repository = Arc::new(PostgresUserRepository::new(pool));
+    let user_service: Arc<dyn UserService> = Arc::new(UserUseCase::new(repository));
+    let config = Arc::new(RwLock::new(AppConfig::default()));
+
+    let state = AppState {
+        user_service,
+        config,
+    };
+
+    Router::new()
+        .route("/users", post(create_user))
+        .with_state(state)
+}
+
+async fn create_user(
+    State(state): State<AppState>,
+    Json(req): Json<CreateUserRequest>,
+) -> impl IntoResponse {
+    match state.user_service.create_user(req.email, req.name).await {
+        Ok(user) => (StatusCode::CREATED, Json(UserResponse::from(user))).into_response(),
+        Err(e) => (StatusCode::BAD_REQUEST, Json(ErrorResponse { error: e })).into_response(),
+    }
+}
+```
+
 ## Security Considerations
 
 1. **Input Validation**: Always validate inputs in domain entities
@@ -498,20 +934,23 @@ pub fn create_router(user_service: Arc<dyn UserService>) -> Router {
 7. **CORS**: Configure appropriately for your use case
 8. **TLS**: Always use HTTPS in production with rustls
 9. **Request Size Limits**: Configure in Axum
+10. **Concurrency Safety**: Use proper synchronization primitives
+11. **Lock Poisoning**: Handle or prevent poisoned locks
 
 ## Required Dependencies
 
 ```toml
 [dependencies]
-axum = "0.7"
+axum = "0"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 uuid = { version = "1", features = ["v4", "serde"] }
 async-trait = "0.1"
-sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "uuid"] }
-tower = "0.4"
-tower-http = { version = "0.5", features = ["cors", "trace"] }
+sqlx = { version = "0", features = ["runtime-tokio-rustls", "postgres", "uuid"] }
+tower = "0"
+tower-http = { version = "0", features = ["cors", "trace"] }
+parking_lot = "0"
 ```
 
 ## Testing Strategy
