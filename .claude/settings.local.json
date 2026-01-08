@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(powershell -Command \"\\(Get-Content ''C:\\\\Users\\\\kay88\\\\.claude\\\\skills\\\\building-with-bits-ui\\\\SKILL.md'' | Measure-Object -Line\\).Lines\")",
+      "Bash(powershell -Command:*)"
+    ]
+  }
+}

@@ -16,6 +16,7 @@ Guides you through building modern web applications with Svelte 5 and SvelteKit.
 - Building API endpoints
 - Adding type-safe routing and navigation
 - Migrating from Svelte 4 to Svelte 5
+- Integrating Bits UI components (see BITS-UI.md)
 
 ## Project Structure
 
@@ -515,6 +516,7 @@ For detailed information on specific topics:
 - **COMPONENTS.md** - Deep dive on Svelte 5 components, runes, snippets, and advanced patterns
 - **SVELTEKIT.md** - Complete guide to SvelteKit routing, layouts, data loading, hooks, and deployment
 - **TESTING.md** - Testing strategies with Vitest, Playwright, and security best practices
+- **BITS-UI.md** - Using Bits UI (unstyled, accessible components) with Svelte 5 runes and SvelteKit
 
 ## Key Dependencies
 
