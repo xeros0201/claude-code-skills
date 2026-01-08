@@ -1,6 +1,6 @@
-# Claude Code Skills - Rust Hexagonal Architecture
+# Claude Code Skills
 
-Professional Claude Code skills for implementing hexagonal architecture (ports and adapters pattern) in Rust projects. Optimized for performance with progressive disclosure and comprehensive guides.
+Professional Claude Code skills for modern development. Includes hexagonal architecture for Rust and Svelte 5 / SvelteKit for frontend development. Optimized for performance with progressive disclosure and comprehensive guides.
 
 ## Available Skills
 
@@ -43,6 +43,27 @@ Guides implementation of hexagonal architecture for Rust projects using Axum. Fe
 
 [View Skill](./implementing-hexagonal-axum/SKILL.md)
 
+### 3. Svelte 5 and SvelteKit Development
+**Skill Name:** `svelte5-sveltekit`
+
+Guides development of modern web applications with Svelte 5 and SvelteKit. Features progressive disclosure with concise quick-start and detailed reference files.
+
+**Use When:**
+- Building web applications with Svelte 5
+- Creating SvelteKit routes and layouts
+- Implementing data loading and form actions
+- Building API endpoints
+- Using Svelte 5 runes ($state, $derived, $effect)
+- Working with snippets and component composition
+
+**Structure:**
+- `SKILL.md` - Quick start and overview
+- `COMPONENTS.md` - Deep dive on Svelte 5 runes, snippets, and patterns
+- `SVELTEKIT.md` - Complete guide to routing, data loading, hooks
+- `TESTING.md` - Testing strategies and security practices
+
+[View Skill](./svelte5-sveltekit/SKILL.md)
+
 ## What is Hexagonal Architecture?
 
 Hexagonal architecture (also known as ports and adapters pattern) creates loosely coupled application components that connect to their software environment through ports and adapters.
@@ -84,6 +105,7 @@ cd ~/.claude/skills
 git clone https://github.com/xeros0201/claude-code-skills.git
 cp -r claude-code-skills/implementing-hexagonal-actix ./
 cp -r claude-code-skills/implementing-hexagonal-axum ./
+cp -r claude-code-skills/svelte5-sveltekit ./
 ```
 
 ### Project-Specific Skills
@@ -96,6 +118,7 @@ cd .claude/skills
 git clone https://github.com/xeros0201/claude-code-skills.git
 cp -r claude-code-skills/implementing-hexagonal-actix ./
 cp -r claude-code-skills/implementing-hexagonal-axum ./
+cp -r claude-code-skills/svelte5-sveltekit ./
 ```
 
 After installation, restart Claude Code for the skills to be recognized.
@@ -104,6 +127,7 @@ After installation, restart Claude Code for the skills to be recognized.
 
 Invoke skills by describing tasks matching their purpose:
 
+**Rust Hexagonal Architecture:**
 ```
 "Implement hexagonal architecture with Actix"
 "Create a user service using clean architecture with Axum"
@@ -111,20 +135,37 @@ Invoke skills by describing tasks matching their purpose:
 "Show me thread-safe repository pattern"
 ```
 
+**Svelte 5 / SvelteKit:**
+```
+"Create a Svelte 5 component with state management"
+"Build a SvelteKit route with data loading"
+"Implement form actions with validation"
+"Set up API endpoints in SvelteKit"
+```
+
 Claude Code automatically recognizes when to use these skills based on your request.
 
 ## Features
 
 ### Progressive Disclosure
-- **Quick Start**: Concise SKILL.md files (<250 lines) for fast loading
+- **Quick Start**: Concise SKILL.md files (<500 lines) for fast loading
 - **Detailed Guides**: Separate reference files loaded only when needed
 - **Efficient Context**: Optimized for Claude's context window
 
 ### Comprehensive Coverage
+
+**Rust Skills:**
 - **Concurrency Patterns**: Arc, Mutex, RwLock, tokio::sync, parking_lot, channels
 - **Complete Implementation**: Layer-by-layer guides with full examples
 - **Testing Strategies**: Unit, integration, and end-to-end testing
 - **Security Best Practices**: Input validation, SQL injection prevention, authentication
+
+**Svelte 5 / SvelteKit:**
+- **Modern Patterns**: Svelte 5 runes, snippets, reactive state management
+- **Full-Stack Development**: Routing, data loading, form actions, API endpoints
+- **Type Safety**: TypeScript-first with full type inference
+- **Testing**: Vitest for unit/component tests, Playwright for E2E
+- **Security**: XSS prevention, CSRF protection, secure authentication
 
 ### Latest Dependencies
 - Flexible version requirements to always use latest compatible versions
@@ -140,16 +181,23 @@ Claude Code automatically recognizes when to use these skills based on your requ
 │   ├── CONCURRENCY.md        # Thread-safe patterns
 │   ├── IMPLEMENTATION.md     # Complete guide
 │   └── TESTING.md            # Testing & security
-└── implementing-hexagonal-axum/
-    ├── SKILL.md              # Quick start (234 lines)
-    ├── CONCURRENCY.md        # Thread-safe patterns
-    ├── IMPLEMENTATION.md     # Complete guide
+├── implementing-hexagonal-axum/
+│   ├── SKILL.md              # Quick start (234 lines)
+│   ├── CONCURRENCY.md        # Thread-safe patterns
+│   ├── IMPLEMENTATION.md     # Complete guide
+│   └── TESTING.md            # Testing & security
+└── svelte5-sveltekit/
+    ├── SKILL.md              # Quick start and overview
+    ├── COMPONENTS.md         # Svelte 5 runes and snippets
+    ├── SVELTEKIT.md          # Routing and data loading
     └── TESTING.md            # Testing & security
 ```
 
 ## Dependencies
 
-Both skills use common Rust dependencies with flexible versions:
+### Rust Skills
+
+Common Rust dependencies with flexible versions:
 
 **Core:**
 - `tokio` - Async runtime
@@ -169,7 +217,30 @@ Both skills use common Rust dependencies with flexible versions:
 - `tower` - Middleware composition
 - `tower-http` - HTTP middleware
 
-## Concurrency Patterns Included
+### Svelte 5 / SvelteKit
+
+**Core:**
+- `svelte` (v5+) - Reactive UI framework
+- `@sveltejs/kit` (v2+) - Full-stack framework
+- `@sveltejs/vite-plugin-svelte` - Vite integration
+
+**Development:**
+- `vite` - Build tool
+- `typescript` - Type safety
+- `vitest` - Unit testing
+- `@playwright/test` - E2E testing
+- `@testing-library/svelte` - Component testing
+
+**Adapters (choose based on deployment):**
+- `@sveltejs/adapter-auto` - Auto-detect platform
+- `@sveltejs/adapter-node` - Node.js
+- `@sveltejs/adapter-static` - Static site generation
+- `@sveltejs/adapter-vercel` - Vercel
+- `@sveltejs/adapter-cloudflare` - Cloudflare
+
+## Key Patterns Included
+
+### Rust Concurrency Patterns
 
 - **Arc** - Atomic reference counting for shared ownership
 - **Mutex** - Mutual exclusion for exclusive access
@@ -180,7 +251,18 @@ Both skills use common Rust dependencies with flexible versions:
 - **Channels** - Message passing between tasks
 - **OnceCell** - Lazy initialization
 
+### Svelte 5 Reactive Patterns
+
+- **$state** - Fine-grained reactive state
+- **$derived** - Computed values with automatic dependency tracking
+- **$effect** - Side effects with automatic cleanup
+- **$props** - Type-safe component props
+- **$bindable** - Two-way binding for components
+- **Snippets** - Reusable markup templates
+
 ## Security Features
+
+### Rust Skills
 
 - Input validation at domain boundaries
 - SQL injection prevention with parameterized queries
@@ -191,16 +273,28 @@ Both skills use common Rust dependencies with flexible versions:
 - Authentication and authorization patterns
 - Request size limits
 
+### Svelte 5 / SvelteKit
+
+- XSS prevention with HTML sanitization
+- CSRF protection (built-in for form actions)
+- Secure cookie handling
+- Content Security Policy headers
+- Input validation on server and client
+- Rate limiting middleware
+- Secure password hashing (argon2)
+- Environment variable protection
+
 ## Standards Compliance
 
-These skills follow official Claude Code standards:
+All skills follow official Claude Code standards:
 
-✅ SKILL.md under 500 lines (217-234 lines)
+✅ SKILL.md under 500 lines
 ✅ Progressive disclosure with supporting files
-✅ Gerund naming convention
+✅ Gerund naming convention (implementing-*, svelte5-sveltekit)
 ✅ Specific descriptions with trigger terms
 ✅ Security-first approach
 ✅ No comments in generated code
+✅ Type safety and modern patterns
 
 ## Contributing
 
@@ -217,8 +311,17 @@ MIT
 
 ## Related Resources
 
+**Rust:**
 - [Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
 - [Actix Web Documentation](https://actix.rs/)
 - [Axum Documentation](https://docs.rs/axum/)
+
+**Svelte 5 / SvelteKit:**
+- [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview)
+- [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction)
+- [Svelte 5 Runes](https://svelte.dev/docs/svelte/runes)
+- [SvelteKit Tutorial](https://svelte.dev/tutorial/kit/introducing-sveltekit)
+
+**Claude Code:**
 - [Claude Code Documentation](https://docs.claude.com/)
 - [Claude Code Skills Best Practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices)
