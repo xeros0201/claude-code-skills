@@ -1,6 +1,6 @@
 # Claude Code Skills
 
-Professional Claude Code skills for modern development. Includes hexagonal architecture for Rust and Svelte 5 / SvelteKit for frontend development. Optimized for performance with progressive disclosure and comprehensive guides.
+Professional Claude Code skills for modern development. Includes hexagonal architecture for Rust web services, Svelte 5 / SvelteKit for frontend development, and Tauri for cross-platform desktop applications. Optimized for performance with progressive disclosure and comprehensive guides.
 
 ## Available Skills
 
@@ -64,6 +64,27 @@ Guides development of modern web applications with Svelte 5 and SvelteKit. Featu
 
 [View Skill](./svelte5-sveltekit/SKILL.md)
 
+### 4. Tauri Desktop Application Development
+**Skill Name:** `tauri-desktop`
+
+Guides development of cross-platform desktop applications with Tauri using Rust backend and web frontend. Features progressive disclosure with comprehensive patterns and security-first approach.
+
+**Use When:**
+- Building cross-platform desktop applications
+- Creating apps with Rust backend and web UI
+- Implementing secure IPC between frontend and backend
+- Managing application windows and system tray
+- Accessing file system and system APIs
+- Building distributable desktop apps
+
+**Structure:**
+- `SKILL.md` - Quick start with commands, state, events, and database
+- `ARCHITECTURE.md` - Clean architecture patterns, state management, error handling
+- `FRONTEND-INTEGRATION.md` - React/Vue/Svelte integration, TypeScript bindings, IPC patterns
+- `TESTING.md` - Unit, integration, E2E testing, and security practices
+
+[View Skill](./tauri-desktop/SKILL.md)
+
 ## What is Hexagonal Architecture?
 
 Hexagonal architecture (also known as ports and adapters pattern) creates loosely coupled application components that connect to their software environment through ports and adapters.
@@ -106,6 +127,7 @@ git clone https://github.com/xeros0201/claude-code-skills.git
 cp -r claude-code-skills/implementing-hexagonal-actix ./
 cp -r claude-code-skills/implementing-hexagonal-axum ./
 cp -r claude-code-skills/svelte5-sveltekit ./
+cp -r claude-code-skills/tauri-desktop ./
 ```
 
 ### Project-Specific Skills
@@ -119,6 +141,7 @@ git clone https://github.com/xeros0201/claude-code-skills.git
 cp -r claude-code-skills/implementing-hexagonal-actix ./
 cp -r claude-code-skills/implementing-hexagonal-axum ./
 cp -r claude-code-skills/svelte5-sveltekit ./
+cp -r claude-code-skills/tauri-desktop ./
 ```
 
 After installation, restart Claude Code for the skills to be recognized.
@@ -141,6 +164,14 @@ Invoke skills by describing tasks matching their purpose:
 "Build a SvelteKit route with data loading"
 "Implement form actions with validation"
 "Set up API endpoints in SvelteKit"
+```
+
+**Tauri Desktop:**
+```
+"Build a Tauri desktop app with file management"
+"Create Tauri commands for database operations"
+"Implement window management in Tauri"
+"Set up secure IPC between frontend and Rust backend"
 ```
 
 Claude Code automatically recognizes when to use these skills based on your request.
@@ -167,6 +198,14 @@ Claude Code automatically recognizes when to use these skills based on your requ
 - **Testing**: Vitest for unit/component tests, Playwright for E2E
 - **Security**: XSS prevention, CSRF protection, secure authentication
 
+**Tauri Desktop:**
+- **Cross-Platform**: Windows, macOS, Linux from single codebase
+- **Clean Architecture**: Service layer, repository pattern, dependency injection
+- **Type-Safe IPC**: Auto-generated TypeScript bindings with specta
+- **Frontend Agnostic**: React, Vue, Svelte integration patterns
+- **Security First**: Capability-based permissions, CSP, input validation
+- **Small Bundle**: ~600KB vs Electron's ~50MB
+
 ### Latest Dependencies
 - Flexible version requirements to always use latest compatible versions
 - No strict version locks - stays current with ecosystem
@@ -186,10 +225,15 @@ Claude Code automatically recognizes when to use these skills based on your requ
 │   ├── CONCURRENCY.md        # Thread-safe patterns
 │   ├── IMPLEMENTATION.md     # Complete guide
 │   └── TESTING.md            # Testing & security
-└── svelte5-sveltekit/
-    ├── SKILL.md              # Quick start and overview
-    ├── COMPONENTS.md         # Svelte 5 runes and snippets
-    ├── SVELTEKIT.md          # Routing and data loading
+├── svelte5-sveltekit/
+│   ├── SKILL.md              # Quick start and overview
+│   ├── COMPONENTS.md         # Svelte 5 runes and snippets
+│   ├── SVELTEKIT.md          # Routing and data loading
+│   └── TESTING.md            # Testing & security
+└── tauri-desktop/
+    ├── SKILL.md              # Quick start with Tauri patterns
+    ├── ARCHITECTURE.md       # Clean architecture and state management
+    ├── FRONTEND-INTEGRATION.md  # React/Vue/Svelte integration
     └── TESTING.md            # Testing & security
 ```
 
@@ -238,6 +282,28 @@ Common Rust dependencies with flexible versions:
 - `@sveltejs/adapter-vercel` - Vercel
 - `@sveltejs/adapter-cloudflare` - Cloudflare
 
+### Tauri Desktop
+
+**Core:**
+- `tauri` (v2+) - Desktop application framework
+- `serde` / `serde_json` - Serialization
+- `tokio` - Async runtime
+- `sqlx` - Database (optional)
+- `thiserror` - Error handling
+
+**Type Safety:**
+- `tauri-specta` - Auto-generate TypeScript bindings
+- `specta` - Type reflection
+
+**Security:**
+- `validator` - Input validation
+- `keyring` - Secure credential storage
+
+**Frontend (in ui/):**
+- React / Vue / Svelte - Choose your framework
+- `@tauri-apps/api` - Tauri JavaScript/TypeScript API
+- TypeScript for type safety
+
 ## Key Patterns Included
 
 ### Rust Concurrency Patterns
@@ -284,6 +350,17 @@ Common Rust dependencies with flexible versions:
 - Secure password hashing (argon2)
 - Environment variable protection
 
+### Tauri Desktop
+
+- Capability-based permission system
+- Content Security Policy (CSP)
+- Path traversal prevention
+- SQL injection prevention with parameterized queries
+- Secure credential storage with keyring
+- Input validation at command boundaries
+- Rate limiting for commands
+- Sandboxing and process isolation
+
 ## Standards Compliance
 
 All skills follow official Claude Code standards:
@@ -321,6 +398,12 @@ MIT
 - [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction)
 - [Svelte 5 Runes](https://svelte.dev/docs/svelte/runes)
 - [SvelteKit Tutorial](https://svelte.dev/tutorial/kit/introducing-sveltekit)
+
+**Tauri:**
+- [Tauri Documentation](https://tauri.app/)
+- [Tauri API Reference](https://tauri.app/v2/reference/)
+- [Tauri Guides](https://tauri.app/v2/guides/)
+- [Tauri Examples](https://github.com/tauri-apps/tauri/tree/dev/examples)
 
 **Claude Code:**
 - [Claude Code Documentation](https://docs.claude.com/)
